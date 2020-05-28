@@ -2,14 +2,14 @@
 
 # ===== STEP: FILL IN ========
 # FROM:
-from_username=gustavoalbuquerquebr
+from_username=your-user-source
+# remember: without a token from the source account, only public gists will be forked
 # if you don't have access to the source account don't modify it the following line
-# remember: without a token, it'll only fork public gists
 from_token=your-token-source
 # ==========
 # TO:
-to_username=gusalbukrk
-to_token=2907c6b796bdc75b45a63c8b63b8826c44c509aa
+to_username=your-user-destiny
+to_token=your-token-destiny
 # =================
 
 
