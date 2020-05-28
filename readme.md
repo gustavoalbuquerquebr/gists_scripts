@@ -1,8 +1,9 @@
 ## Gists scripts
 
 - **delete_gists.sh** = delete all gists from an account
-- **donwload_gists.sh** = download all of an account's gist to the machine
 - **fork_gists.sh** = fork all gists from an account to your account
+- **download_gists.sh** = download all gists from an account
+- **upload_gists.sh** = upload gists downloaded with download_gists.sh
 
 
 ## Instructions
