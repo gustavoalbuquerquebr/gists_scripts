@@ -8,7 +8,7 @@
 
 ## Instructions
 
-- donwload a script
+- download a script
 - make it an executable, `chmod 764 fork_gists.sh`
 - at the top of the file, edit the info (username, token) needed; e.g.
 
@@ -17,4 +17,4 @@ username=your-username
 token=your-token
 ```
 
-- execute, `./fork_gists.sh`
+- execute it, `./fork_gists.sh`
