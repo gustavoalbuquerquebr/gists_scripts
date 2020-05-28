@@ -80,8 +80,10 @@ writeDescriptions() {
   
   if [[ "${already_exists}" ]]; then
     # echo "exists"
-    # s=$(sed -i  '/"${already_exists}"/d' descriptions.csv)
-    sed -i  "/${already_exists}/d" descriptions.csv
+    # if $already_exists contains slashes,
+    # they'll be confused with sed delimiter, resulting in error
+    # that's why use $gist_id instead
+    sed -i  "/${gist_id}/d" descriptions.csv
   fi
 
   echo "${log}" >> descriptions.csv
