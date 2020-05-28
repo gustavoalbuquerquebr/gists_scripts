@@ -8,6 +8,7 @@ from_username=your-user-source
 from_token=your-token-source
 # ==========
 # TO:
+
 to_username=your-user-destiny
 to_token=your-token-destiny
 # =================
@@ -34,14 +35,54 @@ gists_url="${base_url}gists/"
 # that will be fired if user ctrl+c during the forking
 msg=""
 
-# args: partial_response
 if_bad_credentials_quit() {
-  bad_credentials=$(grep 'Bad credentials' <<< "${partial_response}")
-  if [[ "${bad_credentials}" ]]; then
+  echo -n "Verifying credentials..."
+
+  # if from_username doesn't exit
+  req_from_username="curl -s ${base_url}users/${from_username}"
+  res_from_username=$(eval "${req_from_username}")
+  from_username_not_found=$(grep '"message": "Not Found",' <<< "${res_from_username}")
+  if [[ $from_username_not_found ]]; then
     echo " failed"
-    echo "Bad credentials"
+    echo "ERROR: User specified at 'from_username' doesn't exist"
     exit 0
   fi
+  
+  # if to_username doesn't exit
+  req_to_username="curl -s ${base_url}users/${to_username}"
+  res_to_username=$(eval "${req_to_username}")
+  to_username_not_found=$(grep '"message": "Not Found",' <<< "${res_to_username}")
+  if [[ $to_username_not_found ]]; then
+    echo " failed"
+    echo "ERROR: User specified at 'to_username' doesn't exist"
+    exit 0
+  fi
+
+  # if from_token is wrong
+  # only runs if user changed the line (from_token value isn't the default)
+  if [[ ! "${from_token}" = "your-token-source" ]]; then
+    req_from_token="${from_request_header} ${base_url}"
+    res_from_token=$(eval "${req_from_token}")
+    from_token_bad_credentials=$(grep '"message": "Bad credentials"' <<< "${res_from_token}")
+    if [[ $from_token_bad_credentials ]]; then
+      echo " failed"
+      echo "ERROR: Token specified at 'from_token' doesn't work"
+      exit 0
+    fi
+  fi
+
+
+  # if to_token is wrong
+  req_to_token="${to_request_header} ${base_url}"
+  res_to_token=$(eval "${req_to_token}")
+  to_token_bad_credentials=$(grep '"message": "Bad credentials"' <<< "${res_to_token}")
+  if [[ $to_token_bad_credentials ]]; then
+    echo " failed"
+    echo "ERROR: Token specified at 'to_token' doesn't work"
+    exit 0
+  fi
+
+  echo " ok"
 }
 
 #args: partial_response
@@ -86,6 +127,10 @@ interrupt_forking() {
 stty -echoctl
 
 
+# ===== STEP: VERIFY CREDENTIALS ========
+if_bad_credentials_quit
+
+
 # ===== STEP: GET GISTS INFO ========
 echo -n "Getting gists info from source..."
 
@@ -95,8 +140,6 @@ page=1
 while [[ : ]]; do
   request="${from_request_header} \"${from_user_gists_url}?page=${page}&per_page=100\""
   partial_response=$(eval "${request}")
-
-  if_bad_credentials_quit "${partial_response}"
 
   # if current response is empty, get out of the loop
   if_empty_response_complete "${partial_response}" && break
