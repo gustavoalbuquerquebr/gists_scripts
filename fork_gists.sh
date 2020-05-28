@@ -2,18 +2,27 @@
 
 # ===== STEP: FILL IN ========
 # FROM:
-from_username=your-username-source
+from_username=gustavoalbuquerquebr
+# if you don't have access to the source account don't modify it the following line
+# remember: without a token, it'll only fork public gists
 from_token=your-token-source
+# ==========
 # TO:
-to_username=your-username-destiny
-to_token=your-token-destiny
+to_username=gusalbukrk
+to_token=2907c6b796bdc75b45a63c8b63b8826c44c509aa
 # =================
 
 
 # ===== STEP: SET VARIABLES, FUNCTIONS & DEFAULTS ========
 base_url="https://api.github.com/"
 
-from_request_header="curl -sH \"Authorization: token ${from_token}\""
+from_request_header=""
+if [[ "${from_token}" = "your-token-source" ]]; then
+  from_request_header="curl -s"
+else
+  from_request_header="curl -sH \"Authorization: token ${from_token}\""
+fi
+
 from_user_url="${base_url}users/${from_username}/"
 from_user_gists_url="${from_user_url}gists"
 
